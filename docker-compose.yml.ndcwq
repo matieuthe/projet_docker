@@ -1,0 +1,26 @@
+nginx:
+    image: strebern/nginx
+    links:
+        - apache:apache
+    ports:
+        - "80:80" #80 en port entrant et sortant
+    cpu_quota: 0
+    cpu_shares: 800
+    mem_limit: 10m
+apache:
+    build: ./server
+    links:
+        - mysql:mysql
+    ports:
+        - "8080"
+    cpu_quota: 5000
+    cpu_shares: 30
+    mem_limit: 10m
+mysql:
+    image: strebern/mysqlfull
+    ports:
+        - "3306"
+    cpu_quota: 0
+    cpu_shares: 170
+
+

@@ -1,0 +1,31 @@
+
+
+
+FROM coreos
+
+MAINTAINER Simon TREBERN <strebern@insa-rennes.fr>
+
+LABEL version="1.0"
+LABEL description="Apache2 / PHP"
+
+#Update and install the packages needed for the site
+RUN apt-get -y update && apt-get -y install \
+	apache2 \
+	php5 \
+	php5-mysql \
+	wget
+
+
+#TODO put site in var/www/html and a2ensite
+COPY rubis.conf /etc/apache2/sites-available
+COPY setup.sh .
+
+RUN chmod 755 setup.sh && \
+	sleep 1 && \
+	./setup.sh
+
+#Precise the port that will be used
+EXPOSE 80
+
+#Run Apache2
+CMD ["/usr/sbin/apache2ctl","-DFOREGROUND"]
