@@ -1,6 +1,11 @@
 # Fichier inutile #
 ###################
 .metadata/
+Client/.metadata/
+Clif/.metadata/
+log.txt
+brouillon
+load_balancer/results/
 
 # Compiled source #
 ###################
