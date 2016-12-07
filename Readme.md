@@ -1,5 +1,12 @@
 #Dockerized Rubis Application
 
+##Utilisation de l'application graphique Dockerisation.py
+Pour l'utiliser avoir python d'installé.
+Télécharger l'api docker pour python
+
+    pip install docker-py
+
+Ne pas oublier de la lancer en root
 
 ##Configure the simulation
 The configuration file for the emulator is under client/emulator/rubis.properties. You can configure the simulation by playing around with the multiple features available.
