@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 try:
     # for Python2
@@ -7,26 +7,17 @@ except ImportError:
     # for Python3
     from tkinter import *   	## notice lowercase 't' in tkinter here
 
-import os 			#Pour executer des commandes systemes
+import os 						#Pour executer des commandes systemes
 from threading import Thread	#Pour l'affichage en temps reel
-import time			#Pour la gestion du temps
-from docker import Client 	#Pour docker
+import time						#Pour la gestion du temps
+from Donnes_cpu import *
 
-class Afficheur(self,Thread):
-		def __init__(self):
-			Thread.__init__(self)
-			self.heure = StringVar()
-
-	   	def run(self):
-			self.heure.set(time.strftime('%H:%M:%S'))
 
 class Interface(Frame):
     
 	def __init__(self, fenetre, **kwargs):
 		Frame.__init__(self, fenetre, width=768, height=576, **kwargs)
-		self.Afficheur()
 		self.pack(fill=BOTH)
-		self.cli = Client(base_url='unix://var/run/docker.sock')
 		
 		fenetre.title('Dockerisation de rubis')
 
@@ -60,7 +51,20 @@ class Interface(Frame):
 
 		choix_base.pack(side ="left")
 		choix_clif.pack(side ="left")
-	
+		
+
+		#Choix du script
+		sc = LabelFrame(self, text="Choix du type de client", padx=200, pady=20)
+		sc.pack(fill="both", expand="yes")
+
+		self.choix_script = IntVar()
+		choix_script_base = Radiobutton(sc, text="script de base", variable=self.choix_script, value=0)
+		choix_script_ameliore = Radiobutton(sc, text="script ameliore", variable=self.choix_script, value=1)
+
+		choix_script_base.pack(side ="left")
+		choix_script_ameliore.pack(side ="left")
+
+
 		#Second onglet
 		ong2 = LabelFrame(self, text="Lancement manuel", padx=200, pady=20)
 		ong2.pack(fill="both", expand="yes")
@@ -70,7 +74,7 @@ class Interface(Frame):
 		ong2.bouton_docker.pack(side="left")
 
 		#Pour lancer le script de gestion des conteneurs
-		ong2.bouton_auto = Button(ong2, text="Lancement du script auto", command=self.script)
+		ong2.bouton_auto = Button(ong2, text="Lancement du script auto", command=self.choisir_script)
 		ong2.bouton_auto.pack(side="right")
 
 		#Troisieme Onglet
@@ -88,7 +92,7 @@ class Interface(Frame):
 		ong4.bouton_heure = Button(ong4, text="Actualiser", command=self.maj)
 		ong4.bouton_heure.pack(side="left")
 		
-
+		self.heure = StringVar()
 		self.heure.set(time.strftime('%H:%M:%S'))	#Initialisation de heure
 		Label(ong4,text="Heure :").pack(padx=10, pady=10)
 		Label(ong4,textvariable=self.heure).pack(padx=20, pady=0)
@@ -102,7 +106,8 @@ class Interface(Frame):
 		self.charge_moyenne.set("0")			#Initialisation de la charge moyenne
 		Label(ong4,text="Charge moyenne :").pack(padx=10, pady=10)
 		Label(ong4,textvariable=self.charge_moyenne).pack(padx=20, pady=0)
-		  		
+
+  		
 	def runner(self):
 		cmd = "docker-compose up&"
 		os.system(cmd)
@@ -126,55 +131,29 @@ class Interface(Frame):
 		elif self.choix.get()==1:
 			cmd = "docker-compose -f docker-compose.yml.ndc up&"
 			os.system(cmd)	
+
+	def choisir_script(self):
+		if self.choix_script.get()==0:
+			cmd = "sudo ./script_auto.py&"
+			os.system(cmd)
+		elif self.choix_script.get()==1:
+			cmd = "sudo ./script_modif.py&"
+			os.system(cmd)		
+
 	def lib80(self):
 		cmd = "sudo fuser -k 80/tcp&"
 		os.system(cmd)
 	
 	def maj(self):
-		#threading.Timer(5.0, maj).start()
-		# on arrive ici toutes les 1000 ms
-		
-		self.nbConteneur.set(0)
-		#Recupere tous les conteneurs
-		conteneurs = self.cli.containers()
-		variable = 0
-
-		Liste_id = []
-		#On recupere l'id des conteneurs apache et on les mets dans Liste_id
-		for cont in conteneurs:
-			if cont['Image']=="dockerizedrubis_apache":
-				variable+=1
-				Liste_id.append(cont['Id'])
-
-		self.nbConteneur.set(variable)
-		
-		os.system("docker stats --no-stream > .donnes.txt")
-		
-		#Creation du tableau avec les valeurs de cpu
-		valeur_cpu = 0
-		#Recupere la puissance cpu necessaire au fonctionnement de chaque conteneur apache
-		for ligne in Liste_id:
-
-			fichier_CPU = open(".donnes.txt","r")
-
-			#Recupere seulement les premiers caracteres de l'id du conteneur
-			debut_ligne = re.sub(r".{56}$","", ligne)
 	
-			for valeur in fichier_CPU:
-				#Si l'id du conteneur est dans la ligne on recupere la charge du cpu
-				if re.match(debut_ligne, valeur) is not None:
-	    				cpu_deb = re.sub(r"^.{12}[ 	]+","",valeur)
-					cpu_fin = re.sub(r"[^%]+$","",cpu_deb)
-					cpu_re = re.sub(r"%$","",cpu_fin)
-					cpu = re.sub(r"%[^%]+$","",cpu_re)
-					valeur_cpu += float(cpu)
+		self.heure.set(time.strftime('%H:%M:%S'))
 		
-		if variable > 0:
-			valeur_cpu = valeur_cpu/variable
+		Liste_id = liste_conteneur()
+		
+		self.nbConteneur.set(nombre_apache(Liste_id))
 
-		self.charge_moyenne.set(valeur_cpu)
+		self.charge_moyenne.set(average_usage(Liste_id))
 
-		#Fin de la fonction maj
 
 fenetre = Tk()
 interface = Interface(fenetre)
