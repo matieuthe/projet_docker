@@ -1,25 +1,21 @@
 client:
-    build: ./client
+    build: ../client
     links:
-        - nginx:nginx #Nom du service et son alias pour le DNS
+       - nginx:nginx
     ports:
         - "6379"
-    cpu_quota: 50000
-    cpu_shares: 600
 nginx:
     image: strebern/nginx
     links:
         - apache:apache
     ports:
-        - "80:80" #80 en port en entrée et sortie
+        - "8084:80" #80 en port entrant et sortant
 apache:
-    image: strebern/server
+    build: ../server
     links:
         - mysql:mysql
     ports:
         - "8080"
-    cpu_quota: 500
-    cpu_shares: 50
 mysql:
     image: strebern/mysqlfull
     ports:

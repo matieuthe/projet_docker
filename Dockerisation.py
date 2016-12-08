@@ -109,11 +109,11 @@ class Interface(Frame):
 
   		
 	def runner(self):
-		cmd = "docker-compose up&"
+		cmd = "docker-compose -f ./compose_file/docker-compose.yml up&"
 		os.system(cmd)
 
 	def run_non(self):
-		cmd = "docker-compose -f docker-compose.yml.ndc up&"
+		cmd = "docker-compose -f ./compose_file/docker-compose.yml.ndc up&"
 		os.system(cmd)
 
 	def script(self):
