@@ -7,6 +7,7 @@ log.txt
 brouillon
 load_balancer/results/
 *.pyc
+.donnes.txt
 
 # Compiled source #
 ###################
