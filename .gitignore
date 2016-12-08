@@ -6,6 +6,7 @@ Clif/.metadata/
 log.txt
 brouillon
 load_balancer/results/
+*.pyc
 
 # Compiled source #
 ###################
