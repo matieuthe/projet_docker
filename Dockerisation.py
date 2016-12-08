@@ -107,37 +107,24 @@ class Interface(Frame):
 		Label(ong4,text="Charge moyenne :").pack(padx=10, pady=10)
 		Label(ong4,textvariable=self.charge_moyenne).pack(padx=20, pady=0)
 
-  		
-	def runner(self):
-		cmd = "docker-compose -f ./compose_file/docker-compose.yml up&"
-		os.system(cmd)
-
-	def run_non(self):
-		cmd = "docker-compose -f ./compose_file/docker-compose.yml.ndc up&"
-		os.system(cmd)
-
-	def script(self):
-		cmd = "sudo ./script_auto.py&"
-		os.system(cmd)
-
 	def stop(self):
 		cmd = "docker rm -f $(docker ps -a -q)&"
 		os.system(cmd)
 
 	def choisir(self):
 		if self.choix.get()==0:
-			cmd = "docker-compose up&"
+			cmd = "docker-compose -f compose_file/docker-compose.yml up&"
 			os.system(cmd)
 		elif self.choix.get()==1:
-			cmd = "docker-compose -f docker-compose.yml.ndc up&"
-			os.system(cmd)	
+			cmd = "docker-compose -f compose_file/docker-compose.yml.ndc up&"
+			os.system(cmd)
 
 	def choisir_script(self):
 		if self.choix_script.get()==0:
-			cmd = "sudo ./script_auto.py&"
+			cmd = "sudo ./scriptDocker/script_auto.py&"
 			os.system(cmd)
 		elif self.choix_script.get()==1:
-			cmd = "sudo ./script_modif.py&"
+			cmd = "sudo ./scriptDocker/script_modif.py&"
 			os.system(cmd)		
 
 	def lib80(self):

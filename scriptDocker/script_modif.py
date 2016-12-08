@@ -6,17 +6,17 @@ from shutil import copyfile	#Pour copier des fichiers
 from Donnes_cpu import *
 
 #verification de la presence du fichier de conf
-if os.path.isfile("../load_balancerad_balancer/nginx.conf.old"):
-	os.rename("../load_balancer/nginx.conf.old", "../load_balancer/nginx.conf")
+if os.path.isfile("./load_balancerad_balancer/nginx.conf.old"):
+	os.rename("./load_balancer/nginx.conf.old", "./load_balancer/nginx.conf")
 
-copyfile("../load_balancer/nginx.conf", "../load_balancer/nginx.conf.old")
-copyfile("../load_balancer/nginx.conf", "../load_balancer/new.conf")
+copyfile("./load_balancer/nginx.conf", "./load_balancer/nginx.conf.old")
+copyfile("./load_balancer/nginx.conf", "./load_balancer/new.conf")
 
 #Temps de debut du programme
 temps = time.time()
 
 #Creation du fichier de sauvegarde
-sauvegarde = open("../load_balancer/results/"+str(round(temps))+".csv","w")
+sauvegarde = open("./load_balancer/results/"+str(round(temps))+".csv","w")
 sauvegarde.write("temps;charge;nb_conteneur\n")
 sauvegarde.close()
 
@@ -63,7 +63,7 @@ while nb_cont>0:
 	print""
 	
 	#Obliger d'ouvrir et de fermer a chaque fois sinon pas d'ecriture dans le fichier
-	sauvegarde = open("../load_balancer/results/"+str(round(temps))+".csv","a")
+	sauvegarde = open("./load_balancer/results/"+str(round(temps))+".csv","a")
 
 	#On ecrit les donnees dans unn fichier csv
 	sauvegarde.write(str(val_temps)+";"+str(charge)+";"+str(nombre)+"\n")
