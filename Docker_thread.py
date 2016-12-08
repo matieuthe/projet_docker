@@ -8,19 +8,29 @@ except ImportError:
     from tkinter import *   	## notice lowercase 't' in tkinter here
 
 import os 						#Pour executer des commandes systemes
-from threading import Thread	#Pour l'affichage en temps reel
+from threading import Thread
 import time						#Pour la gestion du temps
 from Donnes_cpu import *
 
 
 class Interface(Frame):
+
+	class Afficheur(Thread):
+		def __init__(self, mot):
+			Thread.__init__(self)
+		def run(self):
+			while 1>0:
+				Liste_id = liste_conteneur()
+				print nombre_apache(Liste_id)
+				print average_usage(Liste_id)
     
 	def __init__(self, fenetre, **kwargs):
 		Frame.__init__(self, fenetre, width=768, height=576, **kwargs)
 		self.pack(fill=BOTH)
-		
 		fenetre.title('Dockerisation de rubis')
-
+	
+		process = Afficheur("coucou")
+		process.start()
 		#Menu de la fenetre
 		fenetre.iconbitmap("@./image/docker.xbm")
 		menubar = Menu(fenetre)
@@ -145,7 +155,6 @@ class Interface(Frame):
 		os.system(cmd)
 	
 	def maj(self):
-	
 		self.heure.set(time.strftime('%H:%M:%S'))
 		
 		Liste_id = liste_conteneur()

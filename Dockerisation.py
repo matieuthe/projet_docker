@@ -10,7 +10,7 @@ except ImportError:
 import os 						#Pour executer des commandes systemes
 from threading import Thread	#Pour l'affichage en temps reel
 import time						#Pour la gestion du temps
-from Donnes_cpu import *
+from scriptDocker.Donnes_cpu import *
 
 
 class Interface(Frame):
